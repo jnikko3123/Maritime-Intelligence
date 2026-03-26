@@ -1,1 +1,412 @@
-PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiIC8+CiAgPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiIC8+CiAgPHRpdGxlPk5hdnRlYyBNYXJpbmUgU2VydmljZXMgTWFyaXRpbWUgSW50ZWxsaWdlbmNlPC90aXRsZT4KCiAgPCEtLQogIOKVk+KVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVlgogIOKVkSAgTmF2dGVjIE1hcmluZSBTZXJ2aWNlcyDigJQgUHJvZHVjdGlvbiBEZXBsb3ltZW50IE5vdGVzICAgfHwKICDilZEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKVkQogIOKVkSAgQVBJIEtFWSBJTkpFQ1RJT04gKGNob29zZSBvbmUpOiAgICAgICAgICAgICAgICAgICAgICAgICAgIOKVkQogIOKVkSAgMS4gTmV0bGlmeTogU2V0IEFJU19BUElfS0VZIGluIFNpdGUgU2V0dGluZ3MgJiMxMDsgICAgIOKVkQogIOKVkSAgICAgRW52aXJvbm1lbnQgVmFyaWFibGVzLCB0aGVuIHVzZSBhIGJ1aWxkIHBsdWdpbiAgICAgICDilZEKICDilZEgICAgIChpLmUuIEBuZXRsaWZ5L3BsdWdpbi1pbmxpbmUtZW52KSB0byByZXBsYWNlIHRoZSAgICAgIOKVkQogIOKVkSAgICAgcGxhY2Vob2xkZXIgYXQgYnVpbGQgdGltZS4gICAgICAgICAgICAgICAgICAgICAgICAgICDilZEKICDilZEgIDIuIFF1aWNrIGRlcGxveTogTWFudWFsbHkgcmVwbGFjZSB0aGUgZmFsbGJhY2sgc3RyaW5nICDilZEKICDilZEgICAgIGluIHRoZSBBSVNfQVBJX0tFWSBjb25zdCBiZWxvdyB3aXRoIHlvdXIga2V5LiAgICAgICAgIOKVkQogIOKVkSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDilZEKICDilZEgIERhdGE6IGFpc3N0cmVhbS5pbyBXZWJTb2NrZXQgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKVkQogIOKVkSAgTWFwOiAgQ2FydG9EQiBEYXJrIE1hdHRlciAoTGVhZmxldC5qcykgICAgICAgICAgICAgICAgICDilZEKICDilZnilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZLilZwKICAtLT4KCiAgPCEtLSBMZWFmbGV0IENTU
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navtec Marine Services Maritime Intelligence</title>
+
+  <!--
+  ╔══════════════════════════════════════════════════════════╗
+  ║  Navtec Marine Services — Production Deployment Notes   ║
+  ║                                                          ║
+  ║  API KEY INJECTION (choose one):                         ║
+  ║  1. Netlify: Set AIS_API_KEY in Site Settings →          ║
+  ║     Environment Variables, then use a build plugin       ║
+  ║     (e.g. @netlify/plugin-inline-env) to replace the     ║
+  ║     placeholder at build time.                           ║
+  ║  2. Quick deploy: Manually replace the fallback string   ║
+  ║     in the AIS_API_KEY const below with your key.        ║
+  ║                                                          ║
+  ║  Data: aisstream.io WebSocket                            ║
+  ║  Map:  CartoDB Dark Matter (Leaflet.js)                  ║
+  ╚══════════════════════════════════════════════════════════╝
+  -->
+
+  <!-- Leaflet CSS (jsDelivr — globally cached, no SRI mismatch risk) -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"
+  />
+
+  <!-- Tailwind CSS v3 Play CDN — required for JIT utility generation.
+       Console warning is cosmetic. The file:// security notice disappears on Netlify (HTTPS). -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet JS (jsDelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:   #04091a;
+      --bg-panel:  rgba(8, 15, 38, 0.88);
+      --border:    rgba(56, 189, 248, 0.18);
+      --accent:    #0ea5e9;
+      --accent-2:  #38bdf8;
+      --text-mute: #64748b;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+    }
+
+    .map-container {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+    }
+
+    .leaflet-container { background-color: #0f1729; }
+
+    /* Overlay Panel */
+    .overlay-panel {
+      position: absolute;
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Header */
+    #header {
+      top: 16px; left: 16px;
+      width: 340px;
+      max-height: 100px;
+    }
+
+    .logo-title { font-weight: 700; font-size: 18px; margin-bottom: 4px; }
+    .logo-subtitle { font-size: 13px; color: var(--text-mute); }
+
+    /* Fleet Stats */
+    #fleetStats {
+      top: 140px; left: 16px;
+      width: 340px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--text-mute); font-size: 13px; }
+    .stat-value { font-weight: 600; color: var(--accent-2); font-size: 14px; }
+    .stat-icon { width: 20px; height: 20px; margin-right: 8px; }
+
+    /* Sidebar (right) */
+    #sidebar {
+      top: 16px; right: 16px;
+      width: 320px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-section { margin-bottom: 16px; }
+    .sidebar-section:last-child { margin-bottom: 0; }
+    .section-title { font-weight: 600; color: var(--accent-2); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .event-item {
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-left: 2px solid var(--accent);
+      margin-bottom: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .event-item:hover { background-color: rgba(0, 0, 0, 0.4); border-left-color: var(--accent-2); }
+
+    .event-item .event-type {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .event-item .event-type.alert { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    .event-item .event-type.weather { background-color: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+    .event-item .event-type.info { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
+
+    .event-item .event-title {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .event-item .event-desc {
+      font-size: 12px;
+      color: var(--text-mute);
+      margin-bottom: 4px;
+    }
+
+    .event-item .event-time {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    /* Clock */
+    #clock {
+      bottom: 16px; right: 16px;
+      width: 240px;
+    }
+
+    .clock-display {
+      font-size: 32px;
+      font-weight: 700;
+      font-family: 'Monaco', 'Courier New', monospace;
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .clock-tz {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-mute);
+      font-weight: 500;
+    }
+
+    .clock-status {
+      margin-top: 12px;
+      padding: 8px;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--text-mute);
+      text-align: center;
+    }
+
+    .clock-status.connected { color: #86efac; }
+    .clock-status.disconnected { color: #fca5a5; }
+
+    /* Bottom Left (News/Alerts Log) */
+    #newsPanel {
+      bottom: 16px; left: 16px;
+      width: 340px;
+      max-height: 35vh;
+      overflow-y: auto;
+    }
+
+    .news-item {
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-left: 2px solid var(--accent);
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+
+    .news-item .news-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--accent-2);
+    }
+
+    .news-item .news-desc {
+      font-size: 11px;
+      color: var(--text-mute);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .news-item .news-source {
+      font-size: 10px;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      #header, #fleetStats { display: none; }
+      #sidebar { width: 280px; max-height: 50vh; }
+      #newsPanel { width: 280px; }
+    }
+
+    @media (max-width: 640px) {
+      #sidebar, #newsPanel { display: none; }
+      #clock { width: 200px; }
+      .clock-display { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="map-container" id="map"></div>
+
+  <!-- Header -->
+  <div id="header" class="overlay-panel">
+    <div class="logo-title">Navtec Marine Services</div>
+    <div class="logo-subtitle">Maritime Intelligence</div>
+  </div>
+
+  <!-- Fleet Statistics -->
+  <div id="fleetStats" class="overlay-panel">
+    <div class="section-title">Fleet Overview</div>
+    <div class="stat-row">
+      <span class="stat-label">Total Vessels</span>
+      <span class="stat-value" id="totalVessels">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Active Routes</span>
+      <span class="stat-value" id="activeRoutes">0</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Warnings</span>
+      <span class="stat-value" id="warningCount">0</span>
+    </div>
+  </div>
+
+  <!-- Sidebar (right) -->
+  <div id="sidebar" class="overlay-panel">
+    <div class="sidebar-section">
+      <div class="section-title">Gulf Events</div>
+      <div id="eventsList"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="section-title">Regional Alerts</div>
+      <div id="alertsList"></div>
+    </div>
+  </div>
+
+  <!-- Clock -->
+  <div id="clock" class="overlay-panel">
+    <div class="clock-display" id="clockDisplay">00:00:00</div>
+    <div class="clock-tz">Gulf Standard Time (GST)</div>
+    <div class="clock-status" id="clockStatus">Disconnected</div>
+  </div>
+
+  <!-- News/Alerts Log (bottom left) -->
+  <div id="newsPanel" class="overlay-panel">
+    <div class="section-title">Gulf Intelligence Feed</div>
+    <div id="newsList"></div>
+  </div>
+
+  <script>
+    // Configuration
+    const AIS_API_KEY = 'YOUR_API_KEY_HERE';
+    const GST_OFFSET = 4; // UAE/Kuwait time
+    const MAP_CENTER = [25.2048, 55.2708]; // Strait of Hormuz
+    const SCROLL_VIEW = { lat: 24, lon: 51, zoom: 6 };
+
+    // State
+    let map, vessel_count = 0, route_count = 0, warning_count = 0;
+    let connection_status = false;
+
+    // Initialize Map
+    function initMap() {
+      map = L.map('map').setView(MAP_CENTER, 6);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; CartoDB',
+        maxZoom: 18
+      }).addTo(map);
+    }
+
+    // Clock Handler
+    function startClock() {
+      setInterval(() => {
+        const now = new Date();
+        const gst_time = new Date(now.getTime() + (GST_OFFSET * 3600000) - (now.getTimezoneOffset() * 60000));
+        const hours = String(gst_time.getHours()).padStart(2, '0');
+        const mins = String(gst_time.getMinutes()).padStart(2, '0');
+        const secs = String(gst_time.getSeconds()).padStart(2, '0');
+        document.getElementById('clockDisplay').textContent = `${hours}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    // Sample News Data
+    const news_data = [
+      { title: "Hormuz Strait Alert", desc: "Increased naval activity reported near Strait of Hormuz. Monitor vessel traffic closely.", source: "Gulf Maritime Alert" },
+      { title: "Weather Update", desc: "Dust storm warning: Visibility < 2 km expected in afternoon. Advise caution for all vessels.", source: "Gulf Meteorology" },
+      { title: "Port Closure", desc: "Port of Jebel Ali to undergo maintenance. Estimated reopening: 0400 GST.", source: "UAE Ports" },
+      { title: "Security Notice", desc: "Two cargo vessels successfully transited through Hormuz Strait without incident.", source: "Maritime Security" }
+    ];
+
+    // Render News
+    function renderNews() {
+      const list = document.getElementById('newsList');
+      news_data.forEach(news => {
+        const item = document.createElement('div');
+        item.className = 'news-item';
+        item.innerHTML = `<div class="news-title">${news.title}</div><div class="news-desc">${news.desc}</div><div class="news-source">${news.source}</div>`;
+        list.appendChild(item);
+      });
+    }
+
+    // WebSocket Connection
+    async function connect() {
+      try {
+        const ws = new WebSocket(`wss://stream.aisstream.io/v0/stream?api_key=${AIS_API_KEY}`);
+        ws.onopen = () => {
+          document.getElementById('clockStatus').textContent = 'Connected';
+          document.getElementById('clockStatus').classList.add('connected');
+          connection_status = true;
+        };
+        ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.MessageType === 'PositionReport') {
+            vessel_count++;
+            const { LAT, LON, MMSI, Name } = msg;
+            const marker = L.circleMarker([LAT, LON], { radius: 4, color: '#0ea5e9', fillOpacity: 0.8 });
+            marker.addTo(map).bindPopup(`<b>${Name || 'Vessel'}</b><br>MMSI: ${MMSI}`);
+          }
+        };
+        ws.onerror = () => {
+          document.getElementById('clockStatus').textContent = 'Error';
+          connection_status = false;
+        };
+        ws.onclose = () => {
+          document.getElementById('clockStatus').textContent = 'Disconnected';
+          connection_status = false;
+        };
+      } catch (e) {
+        console.error('Connection error:', e);
+        document.getElementById('clockStatus').textContent = 'Failed';
+      }
+      document.getElementById('totalVessels').textContent = vessel_count;
+      document.getElementById('activeRoutes').textContent = Math.floor(vessel_count / 5);
+      document.getElementById('warningCount').textContent = warning_count;
+    }
+
+    // Initialize on Load
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      startClock();
+      connect();
+      renderNews();
+    });
+  </script>
+</body>
+</html>
